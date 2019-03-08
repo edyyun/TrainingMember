@@ -1,11 +1,11 @@
 package com.training.memberweb.Controller;
 
-import com.training.memberweb.Model.Member;
+import com.training.memberweb.Entity.Member;
 import com.training.memberweb.Service.MemberService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class MemberController {
@@ -30,7 +30,7 @@ public class MemberController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ArrayList<Member> findAll(){
+    public List<Member> findAll(){
         return memberService.findAll();
     }
     @RequestMapping(
@@ -38,7 +38,7 @@ public class MemberController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Member findById(@PathVariable("id")int id){
+    public Member findById(@PathVariable("id")Long id){
         return memberService.findById(id);
     }
     @RequestMapping(
@@ -47,15 +47,15 @@ public class MemberController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public Member update(@RequestBody Member member, @PathVariable("id")int id) {
-        return memberService.update(member);
+    public Member update(@RequestBody Member member, @PathVariable("id")Long id) {
+        return memberService.update(member,id);
     }
     @RequestMapping(
             value = "/members/delete/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Member delete(@PathVariable("id") int id){
+    public Member delete(@PathVariable("id") Long id){
         return memberService.delete(id);
     }
 }

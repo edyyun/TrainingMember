@@ -1,73 +1,51 @@
 package com.training.memberweb.Service;
 
-import com.training.memberweb.Model.Member;
+import com.training.memberweb.Entity.Member;
+import com.training.memberweb.Repository.MemberRepository;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class MemberServiceImpl implements MemberService{
-    private ArrayList<Member> members=new ArrayList<>();
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Override
     public Member create(Member member) {
-        if(member.getMemberAddress()==null||
-        member.getMemberEmail()==null||
-        member.getMemberGender()==null||
-        member.getMemberId()==0||
-        member.getMemberName()==null||
-        member.getMemberPassword()==null)return null;
-
-        if(findById(member.getMemberId())==null)
-        {
-            members.add(member);
-            return member;
-        }else
+        if(member==null){
             return null;
-    }
-
-    @Override
-    public Member findById(int id) {
-        for (Member a:members) {
-            if(a.getMemberId()==id)return a;
         }
-        return null;
+        memberRepository.save(member);
+        return member;
     }
 
     @Override
-    public ArrayList<Member> findAll() {
-        return members;
+    public Member findById(Long id) {
+        Optional<Member> a = memberRepository.findById(id);
+        if(a.isPresent())return a.get();
+        else return null;
     }
 
     @Override
-    public Member update(Member member) {
-        if(member.getMemberAddress()==null||
-                member.getMemberEmail()==null||
-                member.getMemberGender()==null||
-                member.getMemberId()==0||
-                member.getMemberName()==null||
-                member.getMemberPassword()==null)return null;
-        Member a=findById(member.getMemberId());
-        if(a==null)
-        {
-            return null;
-        }else{
-            BeanUtils.copyProperties(member,a);
-            return member;
-        }
-
+    public List<Member> findAll()
+    {
+        return memberRepository.findAll();
     }
 
     @Override
-    public Member delete(int id) {
-        if(id==0)return null;
-        Member a = findById(id);
-        if(a==null){
-            return null;
-        }else{
-            members.remove(a);
-            return a;
-        }
+    public Member update(Member member,Long id) {
+        member.setMemberId(id);
+        memberRepository.save(member);
+        return member;
+    }
+
+    @Override
+    public Member delete(Long id) {
+        memberRepository.delete(findById(id));
+        return findById(id);
     }
 }

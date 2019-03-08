@@ -1,14 +1,14 @@
 package com.training.memberweb.Service;
 
-import com.training.memberweb.Model.Member;
+import com.training.memberweb.Entity.Member;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface MemberService {
 
     Member create(Member member);
-    Member findById(int id);
-    ArrayList<Member> findAll();
-    Member update(Member member);
-    Member delete(int id);
+    Member findById(Long id);
+    List<Member> findAll();
+    Member update(Member member,Long id);
+    Member delete(Long id);
 }

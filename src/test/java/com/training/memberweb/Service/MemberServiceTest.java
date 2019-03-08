@@ -1,10 +1,15 @@
 package com.training.memberweb.Service;
 
-import com.training.memberweb.Model.Member;
+import com.training.memberweb.Entity.Member;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class MemberServiceTest {
 
     private MemberService service;
@@ -16,45 +21,84 @@ public class MemberServiceTest {
 
     @Test
     public void CreateTest(){
-        Member a = new Member(1,"Roka","asdf","jkl;","Coklat bulat","Perempuan");
+        Member a = new Member();
+        a.setMemberAddress("jkl;");
+        a.setMemberEmail("asdf");
+        a.setMemberGender("Perempuan");
+        a.setMemberName("Roka");
+        a.setMemberPassword("Coklat bulat");
         service.create(a);
         Assert.assertTrue(service.findAll().size()==1);
-        Assert.assertTrue(service.findById(1)==a);
         a = new Member();
         Assert.assertTrue(service.create(a)==null);
     }
     @Test
     public void FindByIdTest(){
-        Member a = new Member(1,"Roka","asdf","jkl;","Coklat bulat","Perempuan");
-        service.create(a);
-        service.create(new Member(2,"Teddy","asdf","jkl;","Syahdan","Lakilaki"));
-        service.create(new Member(3,null,"asdf","jkl;",null,"Lakilaki"));
-        Assert.assertTrue(service.findById(1)==a);
+        Member a = new Member();
+        a.setMemberAddress("jkl;");
+        a.setMemberEmail("asdf");
+        a.setMemberGender("Perempuan");
+        a.setMemberName("Roka");
+        a.setMemberPassword("Coklat bulat");
+        Assert.assertTrue(service.findById(a.getMemberId())==a);
     }
     @Test
     public void FindAllTest(){
-        service.create(new Member(1,"Roka","asdf","jkl;","Coklat bulat","Perempuan"));
-        service.create(new Member(2,"Teddy","asdf","jkl;","Syahdan","Lakilaki"));
-        service.create(new Member(3,null,"asdf","jkl;",null,"Lakilaki"));
+        Member a = new Member();
+        a.setMemberAddress("jkl;");
+        a.setMemberEmail("asdf");
+        a.setMemberGender("Perempuan");
+        a.setMemberName("Roka");
+        a.setMemberPassword("Coklat bulat");
+        service.create(a);
+        Member b = new Member();
+        b.setMemberAddress("zcxv");
+        b.setMemberEmail("qewr");
+        b.setMemberGender("Laki Laki");
+        b.setMemberName("Roti");
+        b.setMemberPassword("Coklat pisang");
+        service.create(b);
         Assert.assertTrue(service.findAll().size()==2);
     }
     @Test
     public void UpdateTest(){
-        Member a = new Member(1,"Roka","asdf","jkl;","Coklat bulat","Perempuan");
+        Member a = new Member();
+        a.setMemberAddress("jkl;");
+        a.setMemberEmail("asdf");
+        a.setMemberGender("Perempuan");
+        a.setMemberName("Roka");
+        a.setMemberPassword("Coklat bulat");
         service.create(a);
-        Member b = new Member(1,"Dodi","qewr","uiop;","Coklat bulat","Perempuan");
-        Member c= service.update(b);
+        Member b = new Member();
+        b.setMemberAddress("zcxv");
+        b.setMemberEmail("qewr");
+        b.setMemberGender("Laki Laki");
+        b.setMemberName("Roti");
+        b.setMemberPassword("Coklat pisang");
+        Member c= service.update(b,b.getMemberId());
         Assert.assertTrue(c!=null);
-        //System.out.println(c);
-        //System.out.println(b);
         Assert.assertTrue(b==c);
     }
 
     @Test
-    public void DeleteTest(){
-        service.create(new Member(1,"Roka","asdf","jkl;","Coklat bulat","Perempuan"));
-        service.create(new Member(2,"Teddy","asdf","jkl;","Syahdan","Lakilaki"));
-        Assert.assertTrue(service.delete(3)==null);
-        Assert.assertTrue(service.findById(1)==service.delete(1));
+    public void DeleteTest() {
+
+        Member a = new Member();
+        a.setMemberAddress("jkl;");
+        a.setMemberEmail("asdf");
+        a.setMemberGender("Perempuan");
+        a.setMemberName("Roka");
+        a.setMemberPassword("Coklat bulat");
+        service.create(a);
+        Member b = new Member();
+        b.setMemberAddress("zcxv");
+        b.setMemberEmail("qewr");
+        b.setMemberGender("Laki Laki");
+        b.setMemberName("Roti");
+        b.setMemberPassword("Coklat pisang");
+        service.create(b);
+        service.delete(3L);
+        service.delete(1L);
+        Assert.assertTrue(service.findAll().size() == 1);
     }
 }
