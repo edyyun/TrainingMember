@@ -5,22 +5,28 @@ import com.training.memberweb.Repository.MemberRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Service
 public class MemberServiceImpl implements MemberService{
+
     @Autowired
     private MemberRepository memberRepository;
+
+    public MemberServiceImpl(MemberRepository a) {
+        memberRepository = a;
+    }
 
     @Override
     public Member create(Member member) {
         if(member==null){
             return null;
         }
-        memberRepository.save(member);
-        return member;
+
+        return memberRepository.save(member);
     }
 
     @Override

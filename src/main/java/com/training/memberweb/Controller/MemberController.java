@@ -1,5 +1,6 @@
 package com.training.memberweb.Controller;
 
+import com.training.memberweb.Entity.ApiKey;
 import com.training.memberweb.Entity.Member;
 import com.training.memberweb.Service.MemberService;
 import org.springframework.http.MediaType;
@@ -30,7 +31,7 @@ public class MemberController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public List<Member> findAll(){
+    public List<Member> findAll(ApiKey apiKey){
         return memberService.findAll();
     }
     @RequestMapping(

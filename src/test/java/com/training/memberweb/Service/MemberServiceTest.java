@@ -1,22 +1,30 @@
 package com.training.memberweb.Service;
 
+import com.sun.xml.internal.ws.policy.AssertionSet;
 import com.training.memberweb.Entity.Member;
+import com.training.memberweb.Repository.MemberRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
+import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class MemberServiceTest {
 
     private MemberService service;
+    private MemberRepository memberRepository;
 
     @Before
     public void setUp() throws Exception {
-        service =new MemberServiceImpl();
+        memberRepository = Mockito.mock(MemberRepository.class);
+        service =new MemberServiceImpl(memberRepository);
     }
 
     @Test
@@ -27,10 +35,12 @@ public class MemberServiceTest {
         a.setMemberGender("Perempuan");
         a.setMemberName("Roka");
         a.setMemberPassword("Coklat bulat");
-        service.create(a);
-        Assert.assertTrue(service.findAll().size()==1);
-        a = new Member();
-        Assert.assertTrue(service.create(a)==null);
+        Mockito.when(memberRepository.save(a)).thenReturn(a);
+        Member b = service.create(a);
+        Assert.assertTrue(b !=null);
+        Assert.assertTrue(a.getMemberId()==b.getMemberId());
+
+        Mockito.verify(memberRepository, Mockito.times(1)).save(a);
     }
     @Test
     public void FindByIdTest(){
@@ -40,7 +50,20 @@ public class MemberServiceTest {
         a.setMemberGender("Perempuan");
         a.setMemberName("Roka");
         a.setMemberPassword("Coklat bulat");
-        Assert.assertTrue(service.findById(a.getMemberId())==a);
+
+        Mockito.when(memberRepository.save(a)).thenReturn(a);
+        service.create(a);
+        Mockito.when(memberRepository.findById(1L)).thenReturn(Optional.of(a));
+        Mockito.when(memberRepository.findById(2L)).thenReturn(Optional.empty());
+
+        Member result1 = service.findById(1L);
+        Assert.assertTrue(result1!=null);
+
+        Member result2 = service.findById(2L);
+        Assert.assertTrue(result2 ==null );
+
+        Mockito.verify(memberRepository,Mockito.times(1)).findById(1L);
+        Mockito.verify(memberRepository,Mockito.times(1)).findById(2L);
     }
     @Test
     public void FindAllTest(){
@@ -50,6 +73,7 @@ public class MemberServiceTest {
         a.setMemberGender("Perempuan");
         a.setMemberName("Roka");
         a.setMemberPassword("Coklat bulat");
+        Mockito.when(memberRepository.save(a)).thenReturn(a);
         service.create(a);
         Member b = new Member();
         b.setMemberAddress("zcxv");
@@ -58,7 +82,10 @@ public class MemberServiceTest {
         b.setMemberName("Roti");
         b.setMemberPassword("Coklat pisang");
         service.create(b);
-        Assert.assertTrue(service.findAll().size()==2);
+        List<Member> members = null;
+
+        Mockito.when(memberRepository.findAll()).thenReturn(members);
+        Assert.assertTrue(service.findAll()==null);
     }
     @Test
     public void UpdateTest(){
@@ -68,6 +95,7 @@ public class MemberServiceTest {
         a.setMemberGender("Perempuan");
         a.setMemberName("Roka");
         a.setMemberPassword("Coklat bulat");
+        Mockito.when(memberRepository.save(a)).thenReturn(a);
         service.create(a);
         Member b = new Member();
         b.setMemberAddress("zcxv");
@@ -89,6 +117,7 @@ public class MemberServiceTest {
         a.setMemberGender("Perempuan");
         a.setMemberName("Roka");
         a.setMemberPassword("Coklat bulat");
+        Mockito.when(memberRepository.save(a)).thenReturn(a);
         service.create(a);
         Member b = new Member();
         b.setMemberAddress("zcxv");
@@ -99,6 +128,8 @@ public class MemberServiceTest {
         service.create(b);
         service.delete(3L);
         service.delete(1L);
-        Assert.assertTrue(service.findAll().size() == 1);
+        List<Member> members =null;
+        Mockito.when(memberRepository.findAll()).thenReturn(members);
+        Assert.assertTrue(service.findAll() == null);
     }
 }
